@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sửa sách</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #ff9800, #4CAF50);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: #ffffff;
+            width: 100%;
+            max-width: 420px;
+            padding: 30px 28px;
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="hidden"] {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+
+        button {
+            flex: 1;
+            margin-right: 10px;
+            background: #2196F3;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #1976D2;
+            transform: translateY(-1px);
+        }
+
+        a {
+            flex: 1;
+            text-align: center;
+            background: #9e9e9e;
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        a:hover {
+            background: #7e7e7e;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <h1>✏️ Sửa thông tin sách</h1>
+
+    <form th:action="@{/books/edit}" method="post" th:object="${book}">
+        <input type="hidden" th:field="*{id}">
+
+        <div class="form-group">
+            <label for="title">Tiêu đề sách</label>
+            <input type="text" id="title" th:field="*{title}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="author">Tác giả</label>
+            <input type="text" id="author" th:field="*{author}" required>
+        </div>
+
+        <div class="actions">
+            <button type="submit">💾 Cập nhật</button>
+            <a href="/books">✖ Hủy</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>
