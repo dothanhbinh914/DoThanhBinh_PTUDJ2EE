@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách sách</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #ff9800, #4CAF50);
+            padding: 30px;
+        }
+
+        .container {
+            background: #fff;
+            max-width: 1000px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            margin: 0;
+            color: #333;
+        }
+
+        .btn-add {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 18px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-add:hover {
+            background: #43a047;
+            transform: translateY(-1px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        thead {
+            background: #f5f5f5;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+        }
+
+        th {
+            color: #555;
+            font-weight: 600;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        tbody tr {
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        tbody td {
+            border-bottom: 1px solid #eee;
+        }
+
+        .actions a {
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            margin-right: 6px;
+            transition: 0.3s;
+        }
+
+        .btn-edit {
+            background: #2196F3;
+        }
+
+        .btn-edit:hover {
+            background: #1976D2;
+        }
+
+        .btn-delete {
+            background: #f44336;
+        }
+
+        .btn-delete:hover {
+            background: #d32f2f;
+        }
+
+        .no-books {
+            text-align: center;
+            padding: 40px;
+            color: #777;
+            font-size: 16px;
+        }
+
+        .no-books a {
+            color: #4CAF50;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .no-books a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="header">
+        <h1>📚 Danh sách sách</h1>
+        <a href="/books/add" class="btn-add">➕ Thêm sách</a>
+    </div>
+
+    <table th:if="${!books.isEmpty()}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tiêu đề</th>
+            <th>Tác giả</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="book : ${books}">
+            <td th:text="${book.id}"></td>
+            <td th:text="${book.title}"></td>
+            <td th:text="${book.author}"></td>
+            <td class="actions">
+                <a th:href="@{/books/edit/{id}(id=${book.id})}" class="btn-edit">✏️ Sửa</a>
+                <a th:href="@{/books/delete/{id}(id=${book.id})}"
+                   class="btn-delete"
+                   onclick="return confirm('Bạn chắc chắn muốn xóa sách này?')">🗑 Xóa</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${books.isEmpty()}" class="no-books">
+        📭 Chưa có sách nào. <a href="/books/add">Thêm sách mới</a>
+    </div>
+</div>
+</body>
+</html>
