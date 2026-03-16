@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Đăng nhập - CourseReg</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+    <style>
+        body { min-height: 100vh; display: flex; background: #f1f5f9; font-family: 'Segoe UI', sans-serif; }
+        .left-panel {
+            flex: 1; background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 60px 40px; color: white;
+        }
+        .left-panel .brand-icon {
+            width: 90px; height: 90px; background: rgba(255,255,255,.2);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; margin-bottom: 20px; border: 2px solid rgba(255,255,255,.3);
+        }
+        .left-panel h1 { font-size: 1.8rem; font-weight: 700; }
+        .left-panel p { opacity: .85; max-width: 280px; text-align: center; line-height: 1.7; }
+        .feature-list { list-style: none; padding: 0; margin-top: 30px; width: 100%; max-width: 260px; }
+        .feature-list li { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.15); font-size: .9rem; opacity: .9; }
+        .feature-list li:last-child { border-bottom: none; }
+        .right-panel { width: 460px; display: flex; align-items: center; justify-content: center; padding: 40px 50px; background: white; }
+        .right-panel h2 { font-size: 1.7rem; font-weight: 700; color: #1e293b; }
+        .right-panel .subtitle { color: #64748b; font-size: .9rem; margin-bottom: 28px; }
+        .form-control:focus { border-color: #4f46e5; box-shadow: 0 0 0 .2rem rgba(79,70,229,.15); }
+        .btn-login { background: linear-gradient(135deg, #4f46e5, #7c3aed); border: none; color: white; font-weight: 600; padding: 11px; border-radius: 10px; width: 100%; font-size: 1rem; transition: .2s; }
+        .btn-login:hover { opacity: .9; color: white; transform: translateY(-1px); }
+        .btn-google { background: white; border: 1.5px solid #e2e8f0; color: #374151; font-weight: 600; padding: 10px; border-radius: 10px; width: 100%; font-size: .95rem; transition: .2s; }
+        .btn-google:hover { background: #f8fafc; border-color: #4f46e5; }
+        .divider { display: flex; align-items: center; gap: 12px; margin: 18px 0; color: #94a3b8; font-size: .85rem; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #e2e8f0; }
+        .demo-box { background: #f8f9ff; border: 1px solid #e0e7ff; border-radius: 10px; padding: 12px 16px; }
+        .demo-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: .84rem; color: #475569; border-bottom: 1px solid #e0e7ff; }
+        .demo-row:last-child { border-bottom: none; }
+        @media(max-width:768px) { .left-panel { display: none; } .right-panel { width: 100%; padding: 40px 24px; } }
+    </style>
+</head>
+<body>
+<div class="left-panel">
+    <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
+    <h1>CourseReg</h1>
+    <p class="mt-2">Hệ thống đăng ký học phần cho sinh viên</p>
+    <ul class="feature-list">
+        <li><i class="fas fa-shield-alt"></i><span>Spring Security</span></li>
+        <li><i class="fab fa-google"></i><span>Đăng nhập Google OAuth2</span></li>
+        <li><i class="fas fa-users"></i><span>Phân quyền ADMIN / STUDENT</span></li>
+        <li><i class="fas fa-database"></i><span>MySQL Database</span></li>
+    </ul>
+</div>
+
+<div class="right-panel">
+    <div style="width:100%;">
+        <h2>Xin chào! <i class="fas fa-wave-square small"></i></h2>
+        <p class="subtitle">Đăng nhập để tiếp tục</p>
+
+        <div th:if="${param.error}" class="alert alert-danger py-2">
+            <i class="fas fa-exclamation-circle me-2"></i>Tên đăng nhập hoặc mật khẩu không đúng!
+        </div>
+        <div th:if="${param.logout}" class="alert alert-success py-2">
+            <i class="fas fa-check-circle me-2"></i>Đăng xuất thành công.
+        </div>
+        <div th:if="${param.registered}" class="alert alert-success py-2">
+            <i class="fas fa-user-check me-2"></i>Đăng ký thành công! Hãy đăng nhập.
+        </div>
+
+        <form th:action="@{/login}" method="post">
+            <div class="mb-3">
+                <label class="form-label fw-semibold small">Tên đăng nhập</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0" style="color:#4f46e5;">
+                        <i class="fas fa-user"></i>
+                    </span>
+                    <input type="text" name="username" class="form-control border-start-0"
+                           placeholder="Nhập tên đăng nhập" required autofocus/>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold small">Mật khẩu</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0" style="color:#4f46e5;">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                    <input type="password" name="password" class="form-control border-start-0"
+                           placeholder="Nhập mật khẩu" required/>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-login mt-1">
+                <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+            </button>
+        </form>
+
+        <div class="divider">hoặc</div>
+
+        <!-- Google OAuth2 (Câu 9) -->
+        <a th:href="@{/oauth2/authorization/google}" class="btn btn-google">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                 width="20" class="me-2"/>Đăng nhập bằng Google
+        </a>
+
+        <p class="text-center mt-3 text-muted small">
+            Chưa có tài khoản?
+            <a th:href="@{/register}" class="text-decoration-none fw-semibold" style="color:#4f46e5;">Đăng ký ngay</a>
+        </p>
+
+        
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

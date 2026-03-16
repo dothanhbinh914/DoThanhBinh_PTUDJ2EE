@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Học phần của tôi</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="fw-bold mb-0">
+                <i class="fas fa-book-open me-2 text-primary"></i>Học phần của tôi
+            </h4>
+            <small class="text-muted">
+                Chào <b th:text="${student.username}"></b> —
+                Bạn đã đăng ký <b th:text="${#lists.size(enrollments)}"></b> học phần
+            </small>
+        </div>
+        <a th:href="@{/home}" class="btn btn-outline-primary rounded-pill px-4">
+            <i class="fas fa-plus me-2"></i>Đăng ký thêm
+        </a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(enrollments)}" class="text-center py-5">
+        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+        <h5 class="text-muted">Bạn chưa đăng ký học phần nào</h5>
+        <a th:href="@{/home}" class="btn btn-primary mt-2 px-4 rounded-pill">
+            <i class="fas fa-search me-2"></i>Khám phá học phần
+        </a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4" th:unless="${#lists.isEmpty(enrollments)}">
+        <div class="col" th:each="enrollment : ${enrollments}">
+            <div class="card card-course">
+                <img th:if="${enrollment.course.image != null and !enrollment.course.image.isEmpty()}"
+                     th:src="@{/images/{img}(img=${enrollment.course.image})}"
+                     th:alt="${enrollment.course.name}"/>
+                <img th:unless="${enrollment.course.image != null and !enrollment.course.image.isEmpty()}"
+                     src="https://placehold.co/400x175/4f46e5/white?text=Course"
+                     th:alt="${enrollment.course.name}"/>
+                <div class="card-body">
+                    <h6 class="card-title" th:text="${enrollment.course.name}"></h6>
+                    <p class="text-muted small mb-1">
+                        <i class="fas fa-chalkboard-teacher me-1" style="color:#4f46e5;"></i>
+                        <span th:text="${enrollment.course.lecturer}"></span>
+                    </p>
+                    <p class="text-muted small mb-1">
+                        <i class="fas fa-star me-1" style="color:#f59e0b;"></i>
+                        <span th:text="${enrollment.course.credits} + ' tín chỉ'"></span>
+                    </p>
+                    <p class="text-muted small mb-2" th:if="${enrollment.course.category != null}">
+                        <i class="fas fa-tag me-1" style="color:#7c3aed;"></i>
+                        <span th:text="${enrollment.course.category.name}"></span>
+                    </p>
+                    <div class="mt-auto pt-2 border-top">
+                        <small class="text-muted">
+                            <i class="fas fa-calendar-check me-1 text-success"></i>
+                            Ngày đăng ký: <span th:text="${enrollment.enrollDate}"></span>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

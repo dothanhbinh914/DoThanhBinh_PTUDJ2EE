@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <title>Trang chủ</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <!-- Hero -->
+    <div class="text-center mb-4">
+        <h2 class="fw-bold" style="color:#1e293b;">
+            <i class="fas fa-graduation-cap me-2" style="color:#4f46e5;"></i>Danh sách Học Phần
+        </h2>
+        <p class="text-muted">Khám phá và đăng ký các học phần phù hợp với bạn</p>
+        <div th:if="${keyword != null and !keyword.isEmpty()}" class="alert alert-info d-inline-block py-2 px-4">
+            <i class="fas fa-search me-2"></i>Kết quả tìm kiếm cho: <strong th:text="${keyword}"></strong>
+        </div>
+    </div>
+
+    <!-- Course Grid -->
+    <div th:if="${#lists.isEmpty(courses)}" class="text-center py-5">
+        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+        <h5 class="text-muted">Không tìm thấy học phần nào</h5>
+        <a th:href="@{/home}" class="btn btn-outline-primary mt-2">Xem tất cả</a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-4" th:unless="${#lists.isEmpty(courses)}">
+        <div class="col" th:each="course : ${courses}">
+            <div class="card card-course">
+                <img th:if="${course.image != null and !course.image.isEmpty()}"
+                     th:src="@{/images/{img}(img=${course.image})}"
+                     th:alt="${course.name}"/>
+                <img th:unless="${course.image != null and !course.image.isEmpty()}"
+                     src="https://placehold.co/400x175/4f46e5/white?text=Course"
+                     th:alt="${course.name}"/>
+                <div class="card-body">
+                    <h6 class="card-title" th:text="${course.name}">Tên học phần</h6>
+                    <p class="text-muted small mb-1">
+                        <i class="fas fa-chalkboard-teacher me-1" style="color:#4f46e5;"></i>
+                        <span th:text="${course.lecturer}"></span>
+                    </p>
+                    <p class="text-muted small mb-1">
+                        <i class="fas fa-star me-1" style="color:#f59e0b;"></i>
+                        <span th:text="${course.credits} + ' tín chỉ'"></span>
+                    </p>
+                    <p class="text-muted small mb-2" th:if="${course.category != null}">
+                        <i class="fas fa-tag me-1" style="color:#7c3aed;"></i>
+                        <span th:text="${course.category.name}"></span>
+                    </p>
+                    <div class="mt-auto">
+                        <!-- STUDENT: chưa đăng ký -->
+                        <a th:if="${#authorization.expression('hasRole(''STUDENT'')')
+                                    and enrolledIds != null
+                                    and !enrolledIds.contains(course.id)}"
+                           th:href="@{/enroll/course/{id}(id=${course.id})}"
+                           class="btn btn-enroll btn-sm w-100">
+                            <i class="fas fa-plus-circle me-1"></i>Đăng ký
+                        </a>
+                        <!-- STUDENT: đã đăng ký -->
+                        <button th:if="${#authorization.expression('hasRole(''STUDENT'')')
+                                        and enrolledIds != null
+                                        and enrolledIds.contains(course.id)}"
+                                class="btn btn-enrolled btn-sm w-100" disabled>
+                            <i class="fas fa-check-circle me-1"></i>Đã đăng ký
+                        </button>
+                        <!-- Chưa đăng nhập / ADMIN -->
+                        <a th:if="${!#authorization.expression('hasRole(''STUDENT'')')}"
+                           th:href="@{/login}"
+                           class="btn btn-outline-secondary btn-sm w-100">
+                            <i class="fas fa-sign-in-alt me-1"></i>Đăng nhập để đăng ký
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination (Câu 1) -->
+    <nav th:if="${totalPages > 1}" class="mt-4 d-flex justify-content-center">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/home(page=${currentPage - 1}, keyword=${keyword})}">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/home(page=${i}, keyword=${keyword})}"
+                   th:text="${i + 1}"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/home(page=${currentPage + 1}, keyword=${keyword})}">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <p class="text-center text-muted small mt-2"
+       th:if="${totalPages > 0}"
+       th:text="'Trang ' + (${currentPage} + 1) + ' / ' + ${totalPages}"></p>
+
+</div>
+</body>
+</html>

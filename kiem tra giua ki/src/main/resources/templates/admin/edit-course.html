@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Sửa học phần</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header" style="background:linear-gradient(135deg,#059669,#10b981); color:white; border-radius:12px 12px 0 0; padding:1rem 1.5rem;">
+                    <h5 class="mb-0"><i class="fas fa-edit me-2"></i>Sửa học phần</h5>
+                </div>
+                <div class="card-body p-4">
+
+                    <div th:if="${error}" class="alert alert-danger py-2">
+                        <i class="fas fa-exclamation-circle me-2"></i><span th:text="${error}"></span>
+                    </div>
+
+                    <form th:action="@{/admin/courses/edit}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="id" th:value="${course.id}"/>
+                        <input type="hidden" name="existingImage" th:value="${course.image}"/>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Tên học phần <span class="text-danger">*</span></label>
+                            <input type="text" name="name" class="form-control"
+                                   th:value="${course.name}" placeholder="Nhập tên học phần" required/>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Số tín chỉ <span class="text-danger">*</span></label>
+                                <input type="number" name="credits" class="form-control" min="1" max="10"
+                                       th:value="${course.credits}" placeholder="VD: 3" required/>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Giảng viên <span class="text-danger">*</span></label>
+                                <input type="text" name="lecturer" class="form-control"
+                                       th:value="${course.lecturer}" placeholder="Tên giảng viên" required/>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Danh mục</label>
+                            <select name="category.id" class="form-select">
+                                <option value="">-- Chọn danh mục --</option>
+                                <option th:each="cat : ${categories}"
+                                        th:value="${cat.id}"
+                                        th:selected="${course.category != null and course.category.id == cat.id}"
+                                        th:text="${cat.name}"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Hình ảnh hiện tại</label>
+                            <div th:if="${course.image != null and !course.image.isEmpty()}" class="mb-2">
+                                <img th:src="@{/images/{img}(img=${course.image})}"
+                                     height="80" style="border-radius:8px; object-fit:cover;"/>
+                                <small class="text-muted d-block mt-1" th:text="${course.image}"></small>
+                            </div>
+                            <div th:unless="${course.image != null and !course.image.isEmpty()}"
+                                 class="text-muted small mb-2">Chưa có hình ảnh</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Thay hình ảnh mới</label>
+                            <input type="file" name="imageFile" class="form-control" accept="image/*"/>
+                            <small class="text-muted">Để trống nếu không muốn thay đổi ảnh</small>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success px-4">
+                                <i class="fas fa-save me-2"></i>Cập nhật
+                            </button>
+                            <a th:href="@{/admin/courses}" class="btn btn-outline-secondary px-4">
+                                <i class="fas fa-arrow-left me-2"></i>Hủy
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

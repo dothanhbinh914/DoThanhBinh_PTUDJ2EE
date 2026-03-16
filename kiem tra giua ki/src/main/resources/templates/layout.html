@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title layout:title-pattern="$CONTENT_TITLE - CourseReg">CourseReg</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+    <style>
+        :root { --primary: #4f46e5; --secondary: #7c3aed; }
+        body { background-color: #f1f5f9; font-family: 'Segoe UI', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+        .navbar { background: linear-gradient(135deg, var(--primary), var(--secondary)) !important; box-shadow: 0 2px 12px rgba(79,70,229,.35); padding: .75rem 0; }
+        .navbar-brand { font-weight: 700; font-size: 1.3rem; color: white !important; }
+        .navbar .nav-link { color: rgba(255,255,255,.9) !important; font-weight: 500; }
+        .navbar .nav-link:hover { color: #c7d2fe !important; }
+        .search-wrap .form-control { border-radius: 20px 0 0 20px; border: none; background: rgba(255,255,255,.95); }
+        .search-wrap .btn-search { border-radius: 0 20px 20px 0; background: white; color: var(--primary); border: none; font-weight: 600; padding: 0 14px; }
+        .search-wrap .btn-search:hover { background: #e0e7ff; }
+        main { flex: 1; }
+        footer { background: #1e293b; color: #94a3b8; padding: 1.2rem 0; text-align: center; }
+        .card-course { border: none; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,.08); transition: transform .2s, box-shadow .2s; overflow: hidden; height: 100%; display: flex; flex-direction: column; }
+        .card-course:hover { transform: translateY(-5px); box-shadow: 0 10px 28px rgba(79,70,229,.18); }
+        .card-course img { height: 175px; object-fit: cover; width: 100%; }
+        .card-course .card-body { flex: 1; display: flex; flex-direction: column; padding: 1rem; }
+        .card-course .card-title { font-weight: 700; color: #1e293b; font-size: 1rem; }
+        .btn-enroll { background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; color: white; font-weight: 600; border-radius: 8px; font-size: .875rem; }
+        .btn-enroll:hover { opacity: .88; color: white; }
+        .btn-enrolled { background: #dcfce7; color: #15803d; border: none; border-radius: 8px; font-weight: 600; font-size: .875rem; }
+        .pagination .page-link { color: var(--primary); }
+        .pagination .page-item.active .page-link { background: var(--primary); border-color: var(--primary); }
+        .page-header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 2rem 0; margin-bottom: 2rem; border-radius: 0 0 16px 16px; }
+    </style>
+    <th:block layout:fragment="extra-styles"></th:block>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/home}">
+            <i class="fas fa-graduation-cap me-2"></i>CourseReg
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon" style="filter:invert(1);"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <!-- Search (Câu 8) -->
+            <form class="d-flex mx-auto search-wrap" th:action="@{/home}" method="get">
+                <input class="form-control" style="min-width:220px;" type="search" name="keyword"
+                       th:value="${keyword}" placeholder="Tìm kiếm học phần..."/>
+                <button class="btn-search" type="submit"><i class="fas fa-search"></i></button>
+            </form>
+            <ul class="navbar-nav ms-auto align-items-center gap-1">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/home}"><i class="fas fa-home me-1"></i>Trang chủ</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/admin/courses}"><i class="fas fa-cogs me-1"></i>Quản lý</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('STUDENT')">
+                    <a class="nav-link" th:href="@{/enroll/my-courses}"><i class="fas fa-book-open me-1"></i>Học phần của tôi</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="nav-link" th:href="@{/login}"><i class="fas fa-sign-in-alt me-1"></i>Đăng nhập</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="nav-link" th:href="@{/register}"><i class="fas fa-user-plus me-1"></i>Đăng ký</a>
+                </li>
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle me-1"></i><span sec:authentication="name"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                        <li>
+                            <form th:action="@{/logout}" method="post">
+                                <button class="dropdown-item text-danger" type="submit">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main class="py-4">
+    <div class="container" layout:fragment="content"></div>
+</main>
+
+<footer>
+    <i class="fas fa-graduation-cap me-2"></i>Course Registration System &copy; 2026
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<th:block layout:fragment="extra-scripts"></th:block>
+</body>
+</html>
